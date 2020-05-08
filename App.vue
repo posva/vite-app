@@ -7,17 +7,42 @@
   </p>
   <div>
     <hr />
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+    <button @click="toggle">toggle</button>
     <hr />
-    <router-view />
+    <Home></Home>
+    <hr />
+    <RouterView />
   </div>
 </template>
 
 <script>
+import { ref, shallowRef, h } from 'vue'
+import Home from './views/Home.vue'
+import About from './views/About.vue'
+
+const Component = shallowRef(Home)
+
+const RouterView = {
+  setup(props, { attrs }) {
+    return () => {
+      console.log('attrs:', Object.keys(attrs))
+      return h(Component.value)
+    }
+  },
+}
+
 export default {
-  data: () => ({ count: 0 }),
-};
+  setup() {
+    let count = ref(0)
+    function toggle() {
+      Component.value = Component.value === Home ? About : Home
+    }
+
+    return { count, toggle }
+  },
+
+  components: { RouterView, Home },
+}
 </script>
 
 <style scoped>
